@@ -1,0 +1,8 @@
+ul.menu li {
+    display:inline;
+}
+
+.link:hover {
+    color: blue;
+    text-decoration: underline;
+}

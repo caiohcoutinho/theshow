@@ -1,9 +1,50 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    <title>Hello World! Site Title</title>
+  	<script type="text/javascript" src="/js/angular.min.js"></script>
+  	<script type="text/javascript" src="/js/manager.js"></script>
+  	<link rel="stylesheet" href="/css/manager.css">
+    <title>Manager</title>
   </head>
-  <body>
-    <h1>Hello World!</h1>
+  <body ng-app="manager">
+  	<div ng-controller="controller">
+  		<ul class="menu">
+	    	<li class="link" ng-click="tab='Enredo'">Enredo</li>
+	    	<li class="link" ng-click="tab='Gondar'">Ahlen para Gondar</li>
+	    	<li class="link" ng-click="tab='Marcondes'">Ahlen para Marcondes</li>
+	    	<li class="link" ng-click="tab='Cassie'">Ahlen para Cassie</li>
+    	</ul>
+
+    	<div ng-show="tab == 'Enredo'">
+    		<hr>
+    		Enredo
+    		<hr>
+    		<div>
+    			Ambientes
+    			<div>
+    				<div ng-repeat="scene in scenes">
+    					<input type="text" ng-model="scene.name">
+    				</div>
+    				<p class="link" ng-click="addScene()">Adicionar cena</p>
+    			</div>
+    		</div>
+    		<hr>
+    		Ações
+    		<p class="link" ng-click="action()">Ação</p>
+    		<hr>
+    		<input type="text" ng-model="searchInput">
+    		<p class="link" ng-click="search()">Buscar</p>
+    		<hr>
+    	</div>
+    	<div ng-show="tab == 'Gondar'">
+    		Ahlen para Gondar
+    	</div>
+    	<div ng-show="tab == 'Marcondes'">
+    		Ahlen para Marcondes
+    	</div>
+    	<div ng-show="tab == 'Cassie'">
+    		Ahlen para Cassie
+    	</div>
+  	</div>
   </body>
 </html>
