@@ -24,6 +24,9 @@
     			<div>
     				<div ng-repeat="scene in scenes">
     					<input type="text" ng-model="scene.name">
+              <span ng-click="sendSlides(scene)">Slides</span>
+              <span ng-click="sendImage(scene)">Mostrar</span>
+              <span ng-click="hideImage(scene)">Esconder</span>
     				</div>
     				<p class="link" ng-click="addScene()">Adicionar cena</p>
     			</div>
