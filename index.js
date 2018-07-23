@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require("body-parser");
 const app = express();
+const fs = require('fs');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -23,7 +24,24 @@ app.get('/orders', function(req, res){
 		console.log("GET no orders ");
 		res.send("");
 	}
+});
 
+app.get('/imageOptions', function(req, res){
+	console.log("GET imageOptions");
+	var files = [];
+	fs.readdirSync("static/img").forEach(file => {
+		files.push(file);
+	});
+	res.send(files);
+});
+
+app.get('/musicOptions', function(req, res){
+	console.log("GET musicOptions");
+	var files = [];
+	fs.readdirSync("static/mp3").forEach(file => {
+		files.push(file);
+	});
+	res.send(files);
 });
 
 app.listen(3000, () => console.log('The Show is running on port 3000!'));

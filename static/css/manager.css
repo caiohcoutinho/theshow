@@ -1,8 +1,75 @@
-ul.menu li {
-    display:inline;
-}
-
 .link:hover {
     color: blue;
     text-decoration: underline;
+    cursor: pointer;
 }
+
+.scriptDiv{
+    resize: both;
+    overflow: auto;
+}
+
+input.script{
+	width: 80%;
+	height: 80%;
+}
+
+div.fullWidth{
+	padding: 0px;
+}
+
+li span.tabLink:hover{
+	font-weight: bolder;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.boarders{
+	border-left: 6px;
+	border-left-style: solid;
+	border-color: #412F82;
+}
+
+.whiteText{
+	color: white;
+}
+
+.strongBlueText{
+	color: #412F82;
+}
+
+.middleBlueText{
+	color: #2F4D82;
+}
+
+.lightBlueText{
+	color: #b7f0f5;
+}
+
+.strongBlueBackground{
+	background-color: #412F82;
+}
+
+.middleBlueBackground{
+	background-color: #2F4D82;
+}
+
+.lightBlueBackground{
+	background-color: #b7f0f5;
+}
+
+
+/*
+Vou usar azul para botões, ações e informações importantes.
+O verde fica para mensagens secundários e informações menos importantes.
+Fundos neutros (branco ou bege)
+
+Minha cor é azul
+412F82 azul escuro
+2F4D82 azul médio
+22666B azul claro
+
+Minha complementar é verde
+317820 verde claro
+22824E verde médio
+*/

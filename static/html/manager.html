@@ -3,42 +3,88 @@
   <head>
   	<script type="text/javascript" src="/js/angular.min.js"></script>
   	<script type="text/javascript" src="/js/manager.js"></script>
+    <script type="text/javascript" src="/js/underscore.js"></script>
   	<link rel="stylesheet" href="/css/manager.css">
+    <link rel="stylesheet" href="/css/bootstrap.css">
     <title>Manager</title>
   </head>
   <body ng-app="manager">
-  	<div ng-controller="controller">
-  		<ul class="menu">
-	    	<li class="link" ng-click="tab='Enredo'">Enredo</li>
-	    	<li class="link" ng-click="tab='Gondar'">Ahlen para Gondar</li>
-	    	<li class="link" ng-click="tab='Marcondes'">Ahlen para Marcondes</li>
-	    	<li class="link" ng-click="tab='Cassie'">Ahlen para Cassie</li>
-    	</ul>
+  	<div ng-controller="controller" class="container-fluid fullWidth">
+      <nav class="navbar navbar-expand whiteText strongBlueBackground">
+        <span class="navbar-brand" href="#">MENU</span>
+        <div>
+          <ul class="navbar-nav collapse navbar-collapse">
+            <li class="nav-item active"><span ng-click="tab='Enredo'" class="nav-link tabLink">Enredo</span></li>
+            <li class="nav-item active"><span ng-click="tab='Gondar'" class="nav-link tabLink">Ahlen para Gondar</span></li>
+            <li class="nav-item active"><span ng-click="tab='Marcondes'" class="nav-link tabLink">Ahlen para Marcondes</span></li>
+            <li class="nav-item active"><span ng-click="tab='Cassie'" class="nav-link tabLink">Ahlen para Cassie</span></li>
+          </ul>
+        </div>
+      </nav>
 
-    	<div ng-show="tab == 'Enredo'">
-    		<hr>
-    		Enredo
-    		<hr>
-    		<div>
-    			Ambientes
+    	<div ng-show="tab == 'Enredo'" class="row lightBlueBackground">
+        <div class="col-3 boarders">
+    		  <h3>Enredo</h3>
+          <div class="scriptDiv">
+            <input type="text" class="script"/>
+          </div>
+        </div>
+        <div class="col-3 boarders">
+          <h3>Items</h3>
+          <div>
+            <div ng-repeat="item in items">
+              <span class="link" ng-click="editItem(item, $index)">{{item.name}}</span> <span ng-click="showItem(item)" class="link">Show</span> <span ng-click="hideItem()" class="link">Hide</span> <span ng-click="removeItem(item)" class="link">X</span> 
+            </div>
+            <p class="link" ng-click="addItem()">Adicionar item</p>
+          </div>
+          <div ng-show="editingItem">
+            Edição de Item: <br>
+            Código: <input type="text" ng-model="item.code"/> <br>
+            Nome: <input type="text" ng-model="item.name"/> <br>
+            Descrição: <input type="text" ng-model="item.description"/> <br>
+            Imagem: 
+            <select ng-model="item.image"
+              ng-options="option for option in imageOptions track by option"></select>
+            <br>
+            <span class="link" ng-click="saveItem()">Salvar Item</span>
+          </div>
+        </div>
+        <div class="col-3 boarders">      		
+    			<h3>Ambientes</h3>
     			<div>
     				<div ng-repeat="scene in scenes">
-    					<input type="text" ng-model="scene.name">
-              <span ng-click="sendSlides(scene)">Slides</span>
-              <span ng-click="sendImage(scene)">Mostrar</span>
-              <span ng-click="hideImage(scene)">Esconder</span>
+              <span class="link" ng-click="editScene(scene, $index)">{{scene.name}}</span> <span ng-click="playScene(scene)" class="link">Play</span> <span ng-click="stopMusic()" class="link">Stop</span> <span ng-click="remove(scene)" class="link">X</span> 
     				</div>
     				<p class="link" ng-click="addScene()">Adicionar cena</p>
     			</div>
-    		</div>
-    		<hr>
-    		Ações
-    		<p class="link" ng-click="action()">Ação</p>
-    		<hr>
-    		<input type="text" ng-model="searchInput">
-    		<p class="link" ng-click="search()">Buscar</p>
-    		<hr>
+          <div ng-show="editingScene">
+            Edição de cena: <br>
+            Nome: <input type="text" ng-model="scene.name"/> <br>
+            Música: 
+            <select ng-model="scene.music"
+              ng-options="option for option in musicOptions track by option"></select>
+            <br>
+            Slides: <br>
+            <div ng-repeat="slide in scene.slides track by $index">
+            <select ng-model="slide.name"
+              ng-options="option for option in imageOptions track by option"></select>
+            </div>
+            <span class="link" ng-click="addSlide()">Adicionar Slide</span><br>
+            <span class="link" ng-click="saveScene()">Salvar Cena</span>
+          </div>
+        </div>
+        <div class="col-2 boarders">
+      		<h3>Ações</h3>
+          <div><input type="text" ng-model="searchInput"><span class="link" ng-click="search()">Buscar</span></div>
+          <div><span ng-click="save()" >Salvar</span></div>
+          <div><span ng-click="load()" >Carregar</span></div>
+          <div><span>Parar música</span></div>
+          <div><span>Parar slide show</span></div>
+          <div><span>Esconder Item</span></div>
+          <!-- <div><input id="file" label="Load" type="file"></div>-->
+        </div>
     	</div>
+
     	<div ng-show="tab == 'Gondar'">
     		Ahlen para Gondar
     	</div>
@@ -48,6 +94,7 @@
     	<div ng-show="tab == 'Cassie'">
     		Ahlen para Cassie
     	</div>
+
   	</div>
   </body>
 </html>

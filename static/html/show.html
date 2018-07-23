@@ -2,14 +2,18 @@
 <html>
   <head>
   	<script type="text/javascript" src="/js/angular.min.js"></script>
+    <script type="text/javascript" src="/js/underscore.js"></script>
   	<script type="text/javascript" src="/js/show.js"></script>
   	<link rel="stylesheet" href="/css/show.css">
     <title>Show</title>
   </head>
   <body ng-app="show">
   	<div ng-controller="controller">
-      <img id="image" ng-show="showImage">
-      </img>
+      <div ng-show="showImage" class="ItemArea">
+        <img id="image">
+        </img>
+        <h1>#{{code}}</h1>
+      </div>
   	</div>
   </body>
 </html>

@@ -3,11 +3,11 @@ body{
 	background-repeat: no-repeat;
 }
 
-h1{
-	color: white;
-}
-
 img{
 	max-width: 200px;
 	max-height: 200px;
+}
+
+.ItemArea{
+	background-color: white;
 }
