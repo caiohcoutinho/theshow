@@ -4,14 +4,36 @@
     cursor: pointer;
 }
 
-.scriptDiv{
-    resize: both;
-    overflow: auto;
+img.logo{
+	max-width: 100px;
 }
 
-input.script{
-	width: 80%;
-	height: 80%;
+div.content{
+	padding-left: 100px;
+    padding-right: 100px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+image{
+	max-width: 100px;
+	max-height: 100px;
+}
+
+nav.navbar{
+	padding-left: 100px;
+    padding-right: 100px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.itemIcon{
+	max-height: 64px;
+	max-width: 64px;
+}
+
+textarea{
+	width: 100%;
 }
 
 div.fullWidth{
@@ -19,9 +41,9 @@ div.fullWidth{
 }
 
 li span.tabLink:hover{
-	font-weight: bolder;
 	text-decoration: underline;
 	cursor: pointer;
+	color: lightskyblue;
 }
 
 .boarders{
@@ -34,8 +56,24 @@ li span.tabLink:hover{
 	color: white;
 }
 
+button.btn-primary {
+    color: #fff;
+    background-color: #412F82;
+    border-color: #412F82;
+}
+
+button.btn-primary:hover {
+    color: #fff;
+    background-color: #523ca3;
+    border-color: #523ca3;
+}
+
 .strongBlueText{
 	color: #412F82;
+}
+
+tr.emptyLine{
+	text-align: center
 }
 
 .middleBlueText{
@@ -58,6 +96,10 @@ li span.tabLink:hover{
 	background-color: #b7f0f5;
 }
 
+table.contentTable{
+	width: 100%;
+}
+
 
 /*
 Vou usar azul para botões, ações e informações importantes.
@@ -73,3 +115,4 @@ Minha complementar é verde
 317820 verde claro
 22824E verde médio
 */
+

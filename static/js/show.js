@@ -3,7 +3,11 @@ var app = angular.module("show", []);
 app.controller("controller", function($scope, $http) {
 	$scope.music;
 	$scope.changeBGImage = function(file){
-    	document.body.background = "/img/"+file;
+		if(_.isUndefined(file) && document.body.background != "null"){
+			document.body.background = null;
+		} else if(!_.isUndefined(file)){
+	    	document.body.background = "/img/"+file;
+	    }
 	}
 	$scope.play = function(file){	
 		$scope.stop();
@@ -26,7 +30,11 @@ app.controller("controller", function($scope, $http) {
 	$scope.showItem = function(item){
 		document.getElementById("image").src = "/img/"+item.image;
 		$scope.showImage = true;
-		$scope.code = item.code;
+		$scope.code = "#"+item.code;
+	}
+	$scope.showImageFunction = function(image){
+		document.getElementById("image").src = "/img/"+image.path;
+		$scope.showImage = true;
 	}
 	$scope.hide = function(){
 		$scope.showImage = false;
@@ -39,7 +47,12 @@ app.controller("controller", function($scope, $http) {
 		if($scope.actualSlide >= $scope.slides.length){
 			$scope.actualSlide = 0;
 		}
-		$scope.changeBGImage($scope.slides[$scope.actualSlide].name);
+		var slide = $scope.slides[$scope.actualSlide];
+		if(_.isUndefined(slide)){
+			$scope.changeBGImage();
+		} else{
+			$scope.changeBGImage(slide.name);
+		}
 	}
 	$scope.intervalId;
 	$scope.getOrders = function(){
@@ -58,7 +71,10 @@ app.controller("controller", function($scope, $http) {
 				if(data.music != null){
 					$scope.play(data.music);
 				}
-				if(data.hideItem != null){
+				if(data.image != null){
+					$scope.showImageFunction(data.image);
+				}
+				if(data.hideItem != null || data.hideImage != null){
 					$scope.hide();	
 				}
 				if(data.stopMusic){
