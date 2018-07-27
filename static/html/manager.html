@@ -16,7 +16,7 @@
           <ul class="navbar-nav collapse navbar-collapse">
             <li class="nav-item active"><span ng-click="tab='Enredo'" class="nav-link tabLink">Enredo</span></li>
             <li class="nav-item active"><span ng-click="tab='Items'" class="nav-link tabLink">Items</span></li>
-            <li class="nav-item active"><span ng-click="tab='Ambientes'" class="nav-link tabLink">Ambientes</span></li>
+            <li class="nav-item active"><span ng-click="tab='Cenas'" class="nav-link tabLink">Cenas</span></li>
             <li class="nav-item active"><span ng-click="tab='Imagens'" class="nav-link tabLink">Imagens</span></li>
             <li class="nav-item active"><span ng-click="tab='Gondar'" class="nav-link tabLink">Ahlen para Gondar</span></li>
             <li class="nav-item active"><span ng-click="tab='Marcondes'" class="nav-link tabLink">Ahlen para Marcondes</span></li>
@@ -25,161 +25,218 @@
         </div>
       </nav>
 
-      <div class="content lightBlueBackground">
-      	<div ng-show="tab == 'Enredo'">
-    		  <h3>Enredo</h3>
-          <div class="scriptDiv">
-            <div ng-show="editingScript">
-              <textarea ng-model="script"></textarea>
-              <button ng-click="saveScript()" type="button" class="btn btn-primary">Salvar enredo</button>
-            </div>
-            <div ng-show="!editingScript">
-              <span ng-click="editScript()">Editar Enredo</span>
-              <div id="scriptDiv">
+      <div class="row content lightBlueBackground">
+        <div class="col-9">
+        	<div ng-show="tab == 'Enredo'">
+      		  <h3>Enredo</h3> <button ng-show="!editingScript" type="button" class="btn btn-primary" ng-click="editScript()">Editar Enredo</button>
+            <div class="scriptDiv">
+              <div ng-show="editingScript">
+                <textarea ng-model="script"></textarea>
+                <button ng-click="saveScript()" type="button" class="btn btn-primary">Salvar enredo</button>
+              </div>
+              <div ng-show="!editingScript">
+                <div id="scriptDiv">
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div ng-show="tab == 'Items'">
-          <table class="contentTable">
-            <tr class="row">
-              <td class="col col-9">
-                <h3>Items</h3>
-                <form>
-                  <table class="table">
-                    <tr>
-                      <th></th>
-                      <th>Código</th>
-                      <th>Nome</th>
-                      <th>Descrição</th>
-                      <th>Imagem</th>
-                    </tr>
-                    <tr ng-repeat="item in items">
-                      <td><input type="radio" ng-model="$parent.selectedItemIndex" ng-value="$index" name="selectedItemIndex"></td>
-                      <td>#{{item.code}}</td>
-                      <td>{{item.name}}</td>
-                      <td>{{item.description}}</td>
-                      <td><img class="itemIcon" ng-src="
-                      /img/{{item.image}}"></td>
-                    </tr>
-                    <tr class="emptyLine" ng-if="items.length == 0">
-                      <td colspan="5">Sem Items.</td>
-                    </tr>
-                  </table>
-                </form>
-                <button type="button" class="btn btn-primary" ng-click="addItem()">Adicionar Item</button>
-                <button type="button" class="btn btn-primary" ng-click="editItem()">Editar Item</button>
-                <button type="button" class="btn btn-primary" ng-click="showItem()">Apresentar Item</button>
-                <button type="button" class="btn btn-primary" ng-click="hideItem()">Esconder Item</button>
-                <button type="button" class="btn btn-warning" ng-click="removeItem()">Remover Item</button>
-              </td>
-              <td class="col col-3">  
-                <div ng-show="editingItem">
-                  <h3>Edição de Item</h3>
+          <div ng-show="tab == 'Items'">
+            <table class="contentTable">
+              <tr class="row">
+                <td class="col col-8">
+                  <h3>Items</h3>
                   <form>
-                    <div class="form-group">
-                      <label for="code">Código</label>
-                      <input type="number" class="form-control" id="code" ng-model="item.code">
-                    </div>
-                    <div class="form-group">
-                      <label for="name">Nome</label>
-                      <input type="text" class="form-control" id="name" ng-model="item.name">
-                    </div>
-                    <div class="form-group">
-                      <label for="description">Descrição</label>
-                      <input type="text" class="form-control" id="description" ng-model="item.description">
-                    </div>
-                    <div class="form-group">
-                      <label for="image">Imagem</label>
-                      <select class="form-control" id="image" ng-model="item.image"
-                        ng-options="option for option in imageOptions track by option"></select>
-                    </div>
+                    <table class="table">
+                      <tr>
+                        <th></th>
+                        <th>Código</th>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Imagem</th>
+                      </tr>
+                      <tr ng-repeat="item in items">
+                        <td><input type="radio" ng-model="$parent.selectedItemIndex" ng-value="$index" name="selectedItemIndex"></td>
+                        <td>#{{item.code}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.description}}</td>
+                        <td><img class="itemIcon" ng-src="/img/{{item.image}}"></td>
+                      </tr>
+                      <tr class="emptyLine" ng-if="items.length == 0">
+                        <td colspan="5">Sem Items.</td>
+                      </tr>
+                    </table>
                   </form>
-                  <button type="button" class="btn btn-primary" ng-click="saveItem()">Salvar Item</button>
-                </div>
-              </td>
-            </tr>
-          </table>
-        </div>
-        <div ng-show="tab == 'Ambientes'">  
-          <table class="contentTable">
-            <tr class="row">
-              <td class="col col-9">
-                <h3>Ambientes</h3>
-                <form>
-                  <table class="table">
-                    <tr>
-                      <th></th>
-                      <th>Nome</th>
-                      <th>Música</th>
-                    </tr>
-                    <tr ng-repeat="scene in scenes">
-                      <td><input type="radio" ng-model="$parent.selectedSceneIndex" ng-value="$index" name="selectedSceneIndex"></td>
-                      <td>{{scene.name}}</td>
-                      <td>{{scene.music}}</td>
-                    </tr>
-                    <tr class="emptyLine" ng-if="scenes.length == 0">
-                      <td colspan="5">Sem Cenas.</td>
-                    </tr>
-                  </table>
-                </form>
-                <button type="button" class="btn btn-primary" ng-click="addScene()">Adicionar Cena</button>
-                <button type="button" class="btn btn-primary" ng-click="editScene()">Editar Cena</button>
-                <button type="button" class="btn btn-primary" ng-click="playScene()">Apresentar Cena</button>
-                <button type="button" class="btn btn-primary" ng-click="stopScene()">Parar Cena</button>
-                <button type="button" class="btn btn-warning" ng-click="remove()">Remover Cena</button>
-              </td>
-              <td class="col col-3">  
-                <div ng-show="editingScene">
-                  <h3>Edição de Cena</h3>
-                  <form>
-                    <div class="form-group">
-                      <label for="name">Nome</label>
-                      <input type="text" class="form-control" id="name" ng-model="scene.name">
-                    </div>
-                    <div class="form-group">
-                      <label for="music">Música</label>
-                      <select ng-model="scene.music"
-                        ng-options="option for option in musicOptions track by option"></select>
-                    </div>
-                    <div class="form-group">
-                      <label for="slides">Slides</label><br>
-                      <div ng-repeat="slide in scene.slides track by $index">
-                        <select ng-model="slide.name"
-                          ng-options="option for option in imageOptions track by option"></select>
-                        <span class="link" ng-click="removeSlide(slide)">X</span>
+                  <button type="button" class="btn btn-primary" ng-click="addItem()">Adicionar Item</button>
+                  <button type="button" class="btn btn-primary" ng-click="editItem()">Editar Item</button>
+                  <button type="button" class="btn btn-primary" ng-click="showItem()">Apresentar Item</button>
+                  <button type="button" class="btn btn-primary" ng-click="hideItem()">Esconder Item</button>
+                  <button type="button" class="btn btn-warning" ng-click="removeItem()">Remover Item</button>
+                </td>
+                <td ng-show="editingItem" class="boarders col col-3">  
+                  <div>
+                    <h3>Edição de Item</h3>
+                    <form>
+                      <div class="form-group">
+                        <label for="code">Código</label>
+                        <input type="number" class="form-control" id="code" ng-model="item.code">
                       </div>
-                      <p class="link" ng-click="addSlide()">Adicionar Slide</p>
-                    </div>
-                  </form>
-                  <button type="button" class="btn btn-primary" ng-click="saveScene()">Salvar Cena</button>
-                </div>
-              </td>
-            </tr>
-          </table>
-        </div>
-        <div ng-show="tab == 'Imagens'">
-          <h3>Imagens</h3>
-          <div>
-            <div ng-repeat="image in images">
-              <span class="link" ng-click="editImage(image, $index)">{{image.name}}</span> <span ng-click="showImage(image)" class="link">Show</span> <span ng-click="hideImage()" class="link">Hide</span> <span ng-click="removeImage(image)" class="link">X</span> 
-            </div>
-            <p class="link" ng-click="addImage()">Adicionar imagem</p>
+                      <div class="form-group">
+                        <label for="name">Nome</label>
+                        <input type="text" class="form-control" id="name" ng-model="item.name">
+                      </div>
+                      <div class="form-group">
+                        <label for="description">Descrição</label>
+                        <input type="text" class="form-control" id="description" ng-model="item.description">
+                      </div>
+                      <div class="form-group">
+                        <label for="image">Imagem</label>
+                        <select class="form-control" id="image" ng-model="item.image"
+                          ng-options="option for option in imageOptions track by option"></select>
+                      </div>
+                    </form>
+                    <button type="button" class="btn btn-primary" ng-click="saveItem()">Salvar Item</button>
+                  </div>
+                </td>
+              </tr>
+            </table>
           </div>
-          <div ng-show="editingImage">
-            Edição de Imagem: <br>
-            Nome: <input type="text" ng-model="image.name"/> <br>
-            Imagem:
-            <select ng-model="image.path"
-              ng-options="option for option in imageOptions track by option"></select>
-            <br>
-            <span class="link" ng-click="saveImage()">Salvar Imagem</span>
+          <div ng-show="tab == 'Cenas'">  
+            <table class="contentTable">
+              <tr class="row">
+                <td class="col col-8">
+                  <h3>Cenas</h3>
+                  <form>
+                    <table class="table">
+                      <tr>
+                        <th></th>
+                        <th>Nome</th>
+                        <th>Música</th>
+                        <th>Slides</th>
+                      </tr>
+                      <tr ng-repeat="scene in scenes">
+                        <td><input type="radio" ng-model="$parent.selectedSceneIndex" ng-value="$index" name="selectedSceneIndex"></td>
+                        <td>{{scene.name}}</td>
+                        <td>{{scene.music}}</td>
+                        <td>
+                          <img class="slideIcon" ng-repeat="slide in scene.slides" src="/img/{{slide.name}}"/>
+                        </td>
+                      </tr>
+                      <tr class="emptyLine" ng-if="scenes.length == 0">
+                        <td colspan="5">Sem Cenas.</td>
+                      </tr>
+                    </table>
+                  </form>
+                  <button type="button" class="btn btn-primary" ng-click="addScene()">Adicionar Cena</button>
+                  <button type="button" class="btn btn-primary" ng-click="editScene()">Editar Cena</button>
+                  <button type="button" class="btn btn-primary" ng-click="playScene()">Apresentar Cena</button>
+                  <button type="button" class="btn btn-primary" ng-click="stopScene()">Parar Cena</button>
+                  <button type="button" class="btn btn-warning" ng-click="remove()">Remover Cena</button>
+                </td>
+                <td ng-show="editingScene" class="boarders col col-3">  
+                  <div>
+                    <h3>Edição de Cena</h3>
+                    <form>
+                      <div class="form-group">
+                        <label for="name">Nome</label>
+                        <input type="text" class="form-control" id="name" ng-model="scene.name">
+                      </div>
+                      <div class="form-group">
+                        <label for="music">Música</label>
+                        <select ng-model="scene.music"
+                          ng-options="option for option in musicOptions track by option"></select>
+                      </div>
+                      <div class="form-group">
+                        <label for="slides">Slides</label><br>
+                        <div ng-repeat="slide in scene.slides track by $index">
+                          <select ng-model="slide.name"
+                            ng-options="option for option in imageOptions track by option"></select>
+                          <span class="link" ng-click="removeSlide(slide)">X</span>
+                        </div>
+                        <p class="link" ng-click="addSlide()">Adicionar Slide</p>
+                      </div>
+                    </form>
+                    <button type="button" class="btn btn-primary" ng-click="saveScene()">Salvar Cena</button>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div ng-show="tab == 'Imagens'">
+            <table class="contentTable">
+              <tr class="row">
+                <td class="col col-8">
+                  <h3>Imagens</h3>
+                  <form>
+                    <table class="table">
+                      <tr>
+                        <th></th>
+                        <th>Nome</th>
+                        <th>Imagem</th>
+                      </tr>
+                      <tr ng-repeat="image in images">
+                        <td><input type="radio" ng-model="$parent.selectedImageIndex" ng-value="$index" name="selectedImageIndex"></td>
+                        <td>{{image.name}}</td>
+                        <td><img class="itemIcon" ng-src="/img/{{image.path}}"></td>
+                      </tr>
+                      <tr class="emptyLine" ng-if="images.length == 0">
+                        <td colspan="5">Sem Imagens.</td>
+                      </tr>
+                    </table>
+                  </form>
+                  <button type="button" class="btn btn-primary" ng-click="addImage()">Adicionar Imagem</button>
+                  <button type="button" class="btn btn-primary" ng-click="editImage()">Editar Imagem</button>
+                  <button type="button" class="btn btn-primary" ng-click="showImage()">Apresentar Imagem</button>
+                  <button type="button" class="btn btn-primary" ng-click="hideImage()">Esconder Imagem</button>
+                  <button type="button" class="btn btn-warning" ng-click="removeImage()">Remover Imagem</button>
+                </td>
+                <td ng-show="editingImage" class="boarders col col-3">  
+                  <div>
+                    <h3>Edição de Imagem</h3>
+                    <form>
+                      <div class="form-group">
+                        <label for="name">Nome</label>
+                        <input type="text" class="form-control" id="name" ng-model="image.name">
+                      </div>
+                      <div class="form-group">
+                        <label for="music">Imagem:</label>
+                        <select ng-model="image.path"
+                          ng-options="option for option in imageOptions track by option"></select>
+                      </div>
+                    </form>
+                    <button type="button" class="btn btn-primary" ng-click="saveImage()">Salvar Imagem</button>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div ng-show="tab == 'Gondar'">
+            Ahlen para Gondar
+          </div>
+          <div ng-show="tab == 'Marcondes'">
+            Ahlen para Marcondes
+          </div>
+          <div ng-show="tab == 'Cassie'">
+            Ahlen para Cassie
+          </div>
+        </div>
+        <div class="col-2 boarders">
+          <h3>Ações</h3>
+          <div class="">
+            <button type="button" class="large btn btn-primary btn-block" ng-click="save()">Salvar</button>
+            <div style="overflow: hidden;" class="btn-block">
+              <button type="button" class="large btn btn-primary" ng-click="load()">Carregar</button>
+              <input onchange="angular.element(this).scope().load(this)" id="file" type="file" style="font-size: 50px; width: 120px; opacity: 0; filter:alpha(opacity=0);  position: relative; top: -40px;; left: -20px" />
+            </div>
+            <div class="btn-block">
+              <input type="text" ng-model="searchInput" class="large btn-block" placeholder="Buscar item...">
+              <button type="button" class="large btn btn-primary" ng-click="search()">Buscar</button>
+            </div>
+            <img id="showInManagementImage" class="limitedSize"/>
           </div>
         </div>
         <!--
         <div class="col-2 boarders">
       		<h3>Ações</h3>
-          <img id="image"/>
           <div><input type="text" ng-model="searchInput"><span class="link" ng-click="search()">Buscar</span></div>
           <div><span ng-click="save()" >Salvar</span></div>
           <div><span ng-click="load()" >Carregar</span></div>
@@ -189,16 +246,6 @@
           <div><input id="file" label="Load" type="file"></div>
         </div>
         -->
-
-      	<div ng-show="tab == 'Gondar'">
-      		Ahlen para Gondar
-      	</div>
-      	<div ng-show="tab == 'Marcondes'">
-      		Ahlen para Marcondes
-      	</div>
-      	<div ng-show="tab == 'Cassie'">
-      		Ahlen para Cassie
-      	</div>
       </div>
   	</div>
   </body>

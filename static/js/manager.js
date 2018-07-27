@@ -1,6 +1,6 @@
 var app = angular.module("manager", []); 
 
-app.controller("controller", function($scope, $http) {
+app.controller("controller", function($scope, $http, $compile) {
 
 	var Scene = function(name, slides){
 		this.name = name;
@@ -59,18 +59,52 @@ app.controller("controller", function($scope, $http) {
         });
     }
 
-    $scope.showItem = function(){
-        var index = $scope.selectedItemIndex;
-        var item = $scope.items[index];        
+    $scope.showItemOnConfirm = function(code){
+        var item = _.findWhere($scope.items, {code: code});
+        var confirm = window.confirm("Deseja mostrar o item "+item.name+" (#"+code+")?");
+        if(confirm === true && !_.isUndefined(item)){
+            $scope.showItemPassingItem(item);
+        }
+    }
+
+    $scope.showSceneOnConfirm = function(sceneName){
+        var scene = _.findWhere($scope.scenes, {name: sceneName});
+        var confirm = window.confirm("Deseja mostrar o ambiente "+scene.name+"?");
+        if(confirm === true && !_.isUndefined(scene)){
+            $scope.playScenePassingScene(scene);
+        }
+    }
+
+    $scope.showImageOnConfirm = function(imageName){
+        var image = _.findWhere($scope.images, {name: imageName});
+        var confirm = window.confirm("Deseja mostrar a imagem "+image.name+"?");
+        if(confirm === true && !_.isUndefined(image)){
+            $scope.showImagePassingImage(image);
+        }
+    }
+
+    $scope.showItemPassingItem = function(item){
         $http.post("/orders", {
             item: item
         });
     }
 
-    $scope.showImage = function(image){
+    $scope.showItem = function(){
+        var index = $scope.selectedItemIndex;
+        var item = $scope.items[index];    
+        $scope.showItemPassingItem(item);
+    }
+
+    $scope.showImagePassingImage = function(image){
         $http.post("/orders", {
             image: image
         });
+    }
+
+    $scope.showImage = function(){
+        var index = $scope.selectedImageIndex;
+        var image = $scope.images[index];
+        $scope.showImagePassingImage(image);
     }
 
     $scope.hideItem = function(){
@@ -79,19 +113,23 @@ app.controller("controller", function($scope, $http) {
         });   
     }
 
-    $scope.hideImage = function(image){
+    $scope.hideImage = function(){
         $http.post("/orders", {
             hideImage: true
         });   
     }
 
-    $scope.playScene = function(){
-        var index = $scope.selectedSceneIndex;
-        var scene = $scope.scenes[index];
+    $scope.playScenePassingScene = function(scene){
         $http.post("/orders", {
             slides: scene.slides,
             music: scene.music
         });
+    }
+
+    $scope.playScene = function(){
+        var index = $scope.selectedSceneIndex;
+        var scene = $scope.scenes[index];
+        $scope.playScenePassingScene(scene);
     }
 
     $scope.remove = function(){
@@ -128,7 +166,9 @@ app.controller("controller", function($scope, $http) {
         }
     }
 
-    $scope.removeImage = function(image){
+    $scope.removeImage = function(){
+        var index = $scope.selectedImageIndex;
+        var image = $scope.images[index];
         if($scope.editingImage == true){
             return;
         }
@@ -164,7 +204,9 @@ app.controller("controller", function($scope, $http) {
         $scope.index = index;
     }
 
-    $scope.editImage = function(image, index){
+    $scope.editImage = function(){
+        var index = $scope.selectedImageIndex;
+        var image = $scope.images[index];
         $scope.editingImage = true;
         $scope.image = JSON.parse(JSON.stringify(image));
         $scope.imageIndex = index;
@@ -195,7 +237,7 @@ app.controller("controller", function($scope, $http) {
     }
 
     $scope.showItemInManagement = function(item){
-        document.getElementById("image").src = "/img/"+item.image;
+        document.getElementById("showInManagementImage").src = "/img/"+item.image;
     }
 
     $scope.action = function(){
@@ -203,6 +245,7 @@ app.controller("controller", function($scope, $http) {
     }
 
     $scope.search = function(){
+        document.getElementById("showInManagementImage").src = "";
         var input = $scope.searchInput;
         var id = parseInt(input);
         if(_.isNaN(id)){
@@ -305,9 +348,32 @@ app.controller("controller", function($scope, $http) {
     }
 
     var transform = function(script){
-        // iten
-        // ambiente
-        // bullets
+        var transformedScript = script.replace(/#Item\{(\d*)\}/g, 
+            function(match, idString){
+                var id = parseInt(idString);
+                var item = _.findWhere($scope.items, {code: id});
+                if(_.isUndefined(item)){
+                    return match;
+                }
+                return "<span class='itemLink' ng-click='showItemOnConfirm("+id+")'>"+item.name+"</span>";
+        });
+        transformedScript = script.replace(/#Ambiente\{(.*)\}/g, 
+            function(match, sceneName){
+                var scene = _.findWhere($scope.scenes, {name: sceneName});
+                if(_.isUndefined(scene)){
+                    return match;
+                }
+                return '<span class="itemLink" ng-click="showSceneOnConfirm(\''+scene.name+'\')">'+scene.name+'</span>';
+        });
+        transformedScript = script.replace(/#Imagem\{(.*)\}/g, 
+            function(match, imageName){
+                var image = _.findWhere($scope.images, {name: imageName});
+                if(_.isUndefined(image)){
+                    return match;
+                }
+                return '<span class="itemLink" ng-click="showImageOnConfirm(\''+image.name+'\')">'+image.name+'</span>';
+        });
+        return transformedScript;
     }
 
     $scope.saveScript = function(){
@@ -315,9 +381,10 @@ app.controller("controller", function($scope, $http) {
 
         var transformedScript = transform($scope.script);
 
-        // Perform item and bullet transformations.
+        var el = angular.element(document.getElementById('scriptDiv'));
+        el.html(transformedScript);
+        $compile(el.contents())($scope);
 
-        document.getElementById("scriptDiv").innerHTML = text;
         $scope.editingScript = false;
     }
 
@@ -330,7 +397,12 @@ app.controller("controller", function($scope, $http) {
     }
 
     $scope.save = function(){
-        var file = new Blob([JSON.stringify({a: 1, b: 2, c:3})], 
+        var file = new Blob([JSON.stringify({
+            script: $scope.script,
+            items: $scope.items,
+            scenes: $scope.scenes,
+            images: $scope.images
+        })], 
             {type: "text"});
         var a = document.createElement("a"),
         url = URL.createObjectURL(file);
@@ -344,9 +416,22 @@ app.controller("controller", function($scope, $http) {
         }, 0); 
     }
 
+    document.addEventListener('keydown', function(event) {
+        if(event.keyCode == 83 && event.ctrlKey) {
+            $scope.save();
+            event.preventDefault();
+            return false;
+        }
+    });
+
     var reader = new FileReader();
     reader.onload = function () {
-      $scope.fileContent = reader.result;
+      var savedJson = JSON.parse(reader.result);
+      $scope.script = savedJson.script;
+      $scope.items = savedJson.items;
+      $scope.scenes = savedJson.scenes;
+      $scope.images = savedJson.images;
+      $scope.saveScript();
       $scope.$apply();
     }
 
@@ -355,3 +440,4 @@ app.controller("controller", function($scope, $http) {
     }
 
 });
+

@@ -1,4 +1,4 @@
-.link:hover {
+.link:hover{
     color: blue;
     text-decoration: underline;
     cursor: pointer;
@@ -6,6 +6,11 @@
 
 img.logo{
 	max-width: 100px;
+}
+
+.itemLink{
+	color: blue;
+    text-decoration: underline;
 }
 
 div.content{
@@ -34,6 +39,24 @@ nav.navbar{
 
 textarea{
 	width: 100%;
+}
+
+button.large{
+	width: 100%;
+}
+
+img.slideIcon{
+	border: 2px;
+	border-style: solid;
+	border-color: #412F82;
+	height: 100px;
+	width: 100px;	
+	background-color: white;
+}
+
+img.limitedSize{
+	max-height: 100px;
+	max-width: 100px;
 }
 
 div.fullWidth{
