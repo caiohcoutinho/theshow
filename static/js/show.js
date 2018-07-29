@@ -63,7 +63,8 @@ app.controller("controller", function($scope, $http) {
 					$scope.actualSlide = 0;
 					$scope.slides = data.slides;
 					window.clearInterval($scope.intervalId);
-					$scope.intervalId = setInterval($scope.nextSlide, 1000);
+					$scope.intervalId = setInterval($scope.nextSlide, 10000);
+					$scope.nextSlide();
 				}
 				if(data.item != null){
 					$scope.showItem(data.item);

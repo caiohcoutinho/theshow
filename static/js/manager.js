@@ -9,6 +9,11 @@ app.controller("controller", function($scope, $http, $compile) {
         });
 	}
 
+    var Politician = function(name){
+        this.name = name;
+        this.rumors = [];
+    }
+
     var Item = function(code, name, description, image){
         this.code = code;
         this.name = name;
@@ -21,18 +26,50 @@ app.controller("controller", function($scope, $http, $compile) {
         this.path = path;
     }
 
-    $http.get("/imageOptions").then(function(response){
-        $scope.imageOptions = response.data;
-    });
+    var Rumor = function(text, difficulty){
+        this.text = text;
+        this.difficulty = difficulty;
+    }
 
-    $http.get("/musicOptions").then(function(response){
-        $scope.musicOptions = response.data;
-    });
+    $scope.updateResources = function(){
+        $http.get("/imageOptions").then(function(response){
+            $scope.imageOptions = response.data;
+        });
+        $http.get("/musicOptions").then(function(response){
+            $scope.musicOptions = response.data;
+        });
+    }
+    $scope.updateResources();
+
+    var DifficultyOption = function(code, text, penalty){
+        this.code = code;
+        this.text = text;
+        this.penalty = penalty;
+    }
+
+    $scope.getPenalty = function(code){
+        return _.findWhere($scope.difficultyOptions, {code: code}).penalty;
+    }
+
+    $scope.occupationOptions = [
+        "Regente (-8)", "Ministro (-4)", "Secretário (-0)", "Elegível (Não exige teste)"
+    ];
+
+    $scope.partyOptions = [
+        "Vorlat", "Scwholld", "Rigaud"
+    ];
+
+    $scope.difficultyOptions = [
+        new DifficultyOption("Easy", "Simples", 0),
+        new DifficultyOption("Medium", "Médio", -3),
+        new DifficultyOption("Hard", "Difícil", -5)
+    ];
 
     $scope.tab = "Enredo";
     $scope.items = [];
     $scope.scenes = [];
     $scope.images = [];
+    $scope.politicians = [];
 
     $scope.sendSlides = function(){
         var index = $scope.selectedSceneIndex;
@@ -144,6 +181,18 @@ app.controller("controller", function($scope, $http, $compile) {
         }
     }
 
+    $scope.removePolitician = function(){
+        var index = $scope.selectedPoliticianIndex;
+        var politician = $scope.politicians[index];
+        if($scope.editingPolitician == true){
+            return;
+        }
+        var index = $scope.politicians.indexOf(politician);
+        if (index > -1) {
+            $scope.politicians.splice(index, 1);
+        }
+    }
+
     $scope.removeItem = function(){
         var index = $scope.selectedItemIndex;
         var item = $scope.items[index];  
@@ -153,6 +202,15 @@ app.controller("controller", function($scope, $http, $compile) {
         var index = $scope.items.indexOf(item);
         if (index > -1) {
             $scope.items.splice(index, 1);
+        }
+    }
+
+    $scope.removeRumor = function(index){
+        if($scope.editingPolitician == false){
+            return;
+        }
+        if (index > -1){
+            $scope.politician.rumors.splice(index, 1);
         }
     }
 
@@ -187,6 +245,17 @@ app.controller("controller", function($scope, $http, $compile) {
     $scope.editingImage = false;
     $scope.imageIndex;
     $scope.image;
+    $scope.editingPolitician = false;
+    $scope.politicianIndex;
+    $scope.politician;
+
+    $scope.editPolitician = function(){
+        var index = $scope.selectedPoliticianIndex;
+        var politician = $scope.politicians[index];
+        $scope.editingPolitician = true;
+        $scope.politician = JSON.parse(JSON.stringify(politician));
+        $scope.politicianIndex = index;
+    }
 
     $scope.editItem = function(){
         var index = $scope.selectedItemIndex;
@@ -210,6 +279,14 @@ app.controller("controller", function($scope, $http, $compile) {
         $scope.editingImage = true;
         $scope.image = JSON.parse(JSON.stringify(image));
         $scope.imageIndex = index;
+    }
+
+    $scope.savePolitician = function(){
+        $scope.politicians[$scope.politicianIndex] = $scope.politician;
+        
+        $scope.editingPolitician = false;
+        $scope.politician = null;
+        $scope.politicianIndex = null;
     }
 
     $scope.saveImage = function(){
@@ -237,6 +314,8 @@ app.controller("controller", function($scope, $http, $compile) {
     }
 
     $scope.showItemInManagement = function(item){
+        $scope.displayItemForManager = true;
+        $scope.displayedItem = item;
         document.getElementById("showInManagementImage").src = "/img/"+item.image;
     }
 
@@ -245,7 +324,8 @@ app.controller("controller", function($scope, $http, $compile) {
     }
 
     $scope.search = function(){
-        document.getElementById("showInManagementImage").src = "";
+        $scope.displayItemForManager = false;
+        $scope.displayedItem = null;
         var input = $scope.searchInput;
         var id = parseInt(input);
         if(_.isNaN(id)){
@@ -333,6 +413,11 @@ app.controller("controller", function($scope, $http, $compile) {
         return randomSwordDescriptions[index];
     }
 
+    $scope.addPolitician = function(){
+        $scope.politicians.push(
+            new Politician("Novo político"));
+    }
+
     $scope.addItem = function(){
         $scope.items.push(
             new Item(
@@ -347,7 +432,17 @@ app.controller("controller", function($scope, $http, $compile) {
         $scope.scene.slides.push({name: ""});
     }
 
+    $scope.addRumor = function(){
+        var array = $scope.politician.rumors;
+        if(_.isUndefined(array)){
+            $scope.politician.rumors = []; // migration
+            array = $scope.politician.rumors;
+        }
+        array.push(new Rumor("Boato", $scope.difficultyOptions[0]));
+    }
+
     var transform = function(script){
+
         var transformedScript = script.replace(/#Item\{(\d*)\}/g, 
             function(match, idString){
                 var id = parseInt(idString);
@@ -355,9 +450,10 @@ app.controller("controller", function($scope, $http, $compile) {
                 if(_.isUndefined(item)){
                     return match;
                 }
-                return "<span class='itemLink' ng-click='showItemOnConfirm("+id+")'>"+item.name+"</span>";
+                return "<span class='itemLink' ng-click='showItemOnConfirm("+id+")'>#"+item.code+" "+item.name+"</span>";
         });
-        transformedScript = script.replace(/#Ambiente\{(.*)\}/g, 
+
+        transformedScript = transformedScript.replace(/#Cena\{(.*)\}/g, 
             function(match, sceneName){
                 var scene = _.findWhere($scope.scenes, {name: sceneName});
                 if(_.isUndefined(scene)){
@@ -365,7 +461,8 @@ app.controller("controller", function($scope, $http, $compile) {
                 }
                 return '<span class="itemLink" ng-click="showSceneOnConfirm(\''+scene.name+'\')">'+scene.name+'</span>';
         });
-        transformedScript = script.replace(/#Imagem\{(.*)\}/g, 
+
+        transformedScript = transformedScript.replace(/#Imagem\{(.*)\}/g, 
             function(match, imageName){
                 var image = _.findWhere($scope.images, {name: imageName});
                 if(_.isUndefined(image)){
@@ -373,6 +470,7 @@ app.controller("controller", function($scope, $http, $compile) {
                 }
                 return '<span class="itemLink" ng-click="showImageOnConfirm(\''+image.name+'\')">'+image.name+'</span>';
         });
+
         return transformedScript;
     }
 
@@ -401,7 +499,8 @@ app.controller("controller", function($scope, $http, $compile) {
             script: $scope.script,
             items: $scope.items,
             scenes: $scope.scenes,
-            images: $scope.images
+            images: $scope.images,
+            politicians: $scope.politicians
         })], 
             {type: "text"});
         var a = document.createElement("a"),
@@ -431,6 +530,7 @@ app.controller("controller", function($scope, $http, $compile) {
       $scope.items = savedJson.items;
       $scope.scenes = savedJson.scenes;
       $scope.images = savedJson.images;
+      $scope.politicians = savedJson.politicians;
       $scope.saveScript();
       $scope.$apply();
     }
@@ -441,3 +541,6 @@ app.controller("controller", function($scope, $http, $compile) {
 
 });
 
+window.onbeforeunload = function(){
+  return 'Lembre-se de salvar antes de fechar a página!';
+};

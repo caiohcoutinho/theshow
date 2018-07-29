@@ -8,6 +8,18 @@ img.logo{
 	max-width: 100px;
 }
 
+li.Hard span.penaltySpan{
+	color: red;
+}
+
+li.Medium span.penaltySpan{
+	color: burlywood;
+}
+
+li.Eard span.penaltySpan{
+
+}
+
 .itemLink{
 	color: blue;
     text-decoration: underline;

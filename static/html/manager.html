@@ -18,6 +18,7 @@
             <li class="nav-item active"><span ng-click="tab='Items'" class="nav-link tabLink">Items</span></li>
             <li class="nav-item active"><span ng-click="tab='Cenas'" class="nav-link tabLink">Cenas</span></li>
             <li class="nav-item active"><span ng-click="tab='Imagens'" class="nav-link tabLink">Imagens</span></li>
+            <li class="nav-item active"><span ng-click="tab='Politicians'" class="nav-link tabLink">Políticos</span></li>
             <li class="nav-item active"><span ng-click="tab='Gondar'" class="nav-link tabLink">Ahlen para Gondar</span></li>
             <li class="nav-item active"><span ng-click="tab='Marcondes'" class="nav-link tabLink">Ahlen para Marcondes</span></li>
             <li class="nav-item active"><span ng-click="tab='Cassie'" class="nav-link tabLink">Ahlen para Cassie</span></li>
@@ -54,7 +55,7 @@
                         <th>Descrição</th>
                         <th>Imagem</th>
                       </tr>
-                      <tr ng-repeat="item in items">
+                      <tr ng-repeat="item in items track by $index">
                         <td><input type="radio" ng-model="$parent.selectedItemIndex" ng-value="$index" name="selectedItemIndex"></td>
                         <td>#{{item.code}}</td>
                         <td>{{item.name}}</td>
@@ -209,6 +210,123 @@
               </tr>
             </table>
           </div>
+          <div ng-show="tab == 'Politicians'">
+            <table class="contentTable">
+              <tr class="row">
+                <td class="col col-8">
+                  <h3>Políticos</h3>
+                  <form>
+                    <table class="table">
+                      <tr>
+                        <th></th>
+                        <th>Nome</th>
+                        <th>Imagem</th>
+                        <th>Partido</th>
+                        <th>Ocupação</th>
+                        <th>Lei</th>
+                      </tr>
+                      <tbody ng-repeat="politician in politicians">
+                        <tr>
+                          <td><input type="radio" ng-model="$parent.selectedPoliticianIndex" ng-value="$index" name="selectedPoliticianIndex"></td>
+                          <td>{{politician.name}}</td>
+                          <td><img class="itemIcon" ng-src="/img/{{politician.image}}"></td>
+                          <td>{{politician.party}}</td>
+                          <td>{{politician.occupation}}</td>
+                          <td>{{politician.law}}</td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td colspan="5">
+                            Patronato:
+                            <ul>
+                              <li>Regente: {{politician.regencyPatronage}}</li>
+                              <li>Ministro: {{politician.ministryPatronage}}</li>
+                              <li>Secretário: {{politician.secretaryPatronage}}</li>
+                              <li>Elegível: {{politician.elegiblePatronage}}</li>
+                            </ul>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td colspan="5">
+                            Boatos:
+                            <ul class="rumors">
+                              <li class="{{rumor.difficulty}}" ng-repeat="rumor in politician.rumors track by $index">{{rumor.text}} (<span class="penaltySpan">{{getPenalty(rumor.difficulty)}}</span>)</li>
+                            </ul>
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tr class="emptyLine" ng-if="politicians.length == 0">
+                        <td colspan="5">Sem Políticos (eba!)</td>
+                      </tr>
+                    </table>
+                  </form>
+                  <button type="button" class="btn btn-primary" ng-click="addPolitician()">Adicionar Político</button>
+                  <button type="button" class="btn btn-primary" ng-click="editPolitician()">Editar Político</button>
+                  <button type="button" class="btn btn-warning" ng-click="removePolitician()">Remover Político</button>
+                </td>
+                <td ng-show="editingPolitician" class="boarders col col-3">  
+                  <div>
+                    <h3>Edição de Político</h3>
+                    <form>
+                      <div class="form-group">
+                        <label>Nome:</label>
+                        <input type="text" class="form-control" id="name" ng-model="politician.name">
+                      </div>
+                      <div class="form-group">
+                        <label>Imagem:</label>
+                        <select ng-model="politician.image"
+                          ng-options="option for option in imageOptions track by option"></select>
+                      </div>
+                      <div>
+                        <label>Partido:</label>
+                        <select ng-model="politician.party"
+                          ng-options="option for option in partyOptions track by option"></select>
+                      </div>
+                      <div class="form-group">
+                        <label for="occupation">Ocupação:</label>
+                        <select ng-model="politician.occupation"
+                          ng-options="option for option in occupationOptions track by option"></select>
+                      </div>
+                      <div class="form-group">
+                        <label for="rumors">Boatos</label><br>
+                        <div ng-repeat="rumor in politician.rumors track by $index">
+                          <select ng-model="rumor.difficulty">
+                            <option ng-repeat="option in difficultyOptions track by option.code"
+                              ng-value="option.code">{{option.text}}</option>
+                          </select>
+                          <input type="text" class="form-control" ng-model="rumor.text">
+                          <span class="link" ng-click="removeRumor($index)">X</span>
+                        </div>
+                        <p class="link" ng-click="addRumor()">Adicionar Boato</p>
+                      </div>
+                      <div class="form-group">
+                        <label for="regencyPatronage">Patronato como Regente:</label>
+                        <input type="text" class="form-control" id="regencyPatronage" ng-model="politician.regencyPatronage">
+                      </div>
+                      <div class="form-group">
+                        <label for="ministryPatronage">Patronato como Ministro:</label>
+                        <input type="text" class="form-control" id="ministryPatronage" ng-model="politician.ministryPatronage">
+                      </div>
+                      <div class="form-group">
+                        <label for="secretaryPatronage">Patronato como Secretário:</label>
+                        <input type="text" class="form-control" id="secretaryPatronage" ng-model="politician.secretaryPatronage">
+                      </div>
+                      <div class="form-group">
+                        <label for="elegiblePatronage">Patronato como Elegível:</label>
+                        <input type="text" class="form-control" id="elegiblePatronage" ng-model="politician.elegiblePatronage">
+                      </div>
+                      <div class="form-group">
+                        <label for="law">Lei:</label>
+                        <input type="text" class="form-control" id="law" ng-model="politician.law">
+                      </div>
+                    </form>
+                    <button type="button" class="btn btn-primary" ng-click="savePolitician()">Salvar Político</button>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
           <div ng-show="tab == 'Gondar'">
             Ahlen para Gondar
           </div>
@@ -222,6 +340,7 @@
         <div class="col-2 boarders">
           <h3>Ações</h3>
           <div class="">
+            <button type="button" class="large btn btn-primary btn-block" ng-click="updateResources()">Atualizar Recursos</button>
             <button type="button" class="large btn btn-primary btn-block" ng-click="save()">Salvar</button>
             <div style="overflow: hidden;" class="btn-block">
               <button type="button" class="large btn btn-primary" ng-click="load()">Carregar</button>
@@ -231,7 +350,11 @@
               <input type="text" ng-model="searchInput" class="large btn-block" placeholder="Buscar item...">
               <button type="button" class="large btn btn-primary" ng-click="search()">Buscar</button>
             </div>
-            <img id="showInManagementImage" class="limitedSize"/>
+            <div ng-show="displayItemForManager">
+              <img id="showInManagementImage" class="limitedSize" ng-src="/img/{{displayedItem.image}}"/>
+              <h3>{{displayedItem.name}}</h3>
+              <p>{{displayedItem.description}}</p>
+            </div>
           </div>
         </div>
         <!--
