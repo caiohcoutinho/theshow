@@ -70,6 +70,7 @@ app.controller("controller", function($scope, $http, $compile) {
     $scope.scenes = [];
     $scope.images = [];
     $scope.politicians = [];
+    $scope.knowledge = {};
 
     $scope.sendSlides = function(){
         var index = $scope.selectedSceneIndex;
@@ -494,13 +495,28 @@ app.controller("controller", function($scope, $http, $compile) {
         $scope.editScript();
     }
 
+    $scope.showAhlenFor = function(character){
+        $http.post("/orders", {
+            politicians: $scope.politicians,
+            knowledge: $scope.knowledge,
+            chosenCharacter: character
+        });
+    }
+
+    $scope.hideAhlen = function(){
+        $http.post("/orders", {
+            hideKnowledge: true,
+        });
+    }
+
     $scope.save = function(){
         var file = new Blob([JSON.stringify({
             script: $scope.script,
             items: $scope.items,
             scenes: $scope.scenes,
             images: $scope.images,
-            politicians: $scope.politicians
+            politicians: $scope.politicians,
+            knowledge: $scope.knowledge
         })], 
             {type: "text"});
         var a = document.createElement("a"),
@@ -531,6 +547,10 @@ app.controller("controller", function($scope, $http, $compile) {
       $scope.scenes = savedJson.scenes;
       $scope.images = savedJson.images;
       $scope.politicians = savedJson.politicians;
+      $scope.knowledge = savedJson.knowledge;
+      if(_.isUndefined($scope.knowledge)){
+        $scope.knowledge = {};
+      }
       $scope.saveScript();
       $scope.$apply();
     }

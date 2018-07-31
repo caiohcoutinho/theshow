@@ -327,14 +327,30 @@
               </tr>
             </table>
           </div>
-          <div ng-show="tab == 'Gondar'">
-            Ahlen para Gondar
-          </div>
-          <div ng-show="tab == 'Marcondes'">
-            Ahlen para Marcondes
-          </div>
-          <div ng-show="tab == 'Cassie'">
-            Ahlen para Cassie
+          <div ng-show="tab == 'Gondar' || tab == 'Marcondes' || tab == 'Cassie'">
+            <h3>Ahlen para {{tab}}</h3>
+            <button type="button" class="btn btn-primary" ng-click="showAhlenFor(tab)">Mostrar Conhecimento</button>
+            <button type="button" class="btn btn-primary" ng-click="hideAhlen()">Esconder Conhecimento</button>
+            <table class="table">
+              <tr>
+                <th>Político</th>
+                <th>Identidade</th>
+                <th>Lei</th>
+                <th>Patronato</th>
+                <th>Boato</th>
+                <th>Boato</th>
+                <th>Boato</th>
+                <th>Boato</th>
+                <th>Boato</th>
+              </tr>
+              <tr ng-repeat="politician in politicians track by $index">
+                <td>{{politician.name}}</td>
+                <td><input type="checkbox" ng-model="knowledge[tab][politician.name].identity" /></td>
+                <td><input type="checkbox" ng-model="knowledge[tab][politician.name].law" /></td>
+                <td><input type="checkbox" ng-model="knowledge[tab][politician.name].patronage" /></td>
+                <td ng-repeat="rumor in politician.rumors track by $index"><input type="checkbox" ng-model="knowledge[tab][politician.name].rumor[$index]" /> {{getPenalty(rumor.difficulty)}}</td>
+              </tr>
+            </table>
           </div>
         </div>
         <div class="col-2 boarders">

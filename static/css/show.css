@@ -1,4 +1,4 @@
-body{
+body#bodyId.bodyWithStyle{
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-color: black;
@@ -16,4 +16,31 @@ img{
     display: block;
     margin-left: auto;
     margin-right: auto 
+}
+
+.knowledgeTable{
+	width: 100%;
+}
+
+tr.knowledgeRow{
+	height: 30%;
+}
+
+.fullHeight{
+	
+}
+
+td.politicianBox h3{
+	background-color: white;
+	border-color: gray;
+	border-style: solid;
+}
+
+td.politicianBox{
+	text-align: center;
+}
+
+td.politicianBox img{
+	max-height: 300px;
+	max-width: 300px;
 }

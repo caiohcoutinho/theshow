@@ -4,15 +4,95 @@
   	<script type="text/javascript" src="/js/angular.min.js"></script>
     <script type="text/javascript" src="/js/underscore.js"></script>
   	<script type="text/javascript" src="/js/show.js"></script>
-  	<link rel="stylesheet" href="/css/show.css">
+    <link rel="stylesheet" href="/css/show.css">
+    <link rel="stylesheet" href="/css/bootstrap.css">
     <title>Show</title>
   </head>
-  <body ng-app="show">
-  	<div ng-controller="controller">
-      <div ng-show="showImage" class="ItemArea">
+  <body class="bodyWithStyle fullHeight" id="bodyId" ng-app="show">
+  	<div class="fullHeight" ng-controller="controller">
+      <div ng-show="showImage && !showKnowledge" class="ItemArea">
         <img id="image">
         </img>
         <h1>{{code}}</h1>
+      </div>
+      <div class="fullHeight" ng-show="showKnowledge">
+        <table class="fullHeight knowledgeTable">
+          <tr class="row knowledgeRow">
+            <td class="politicianBox col-2"></td>
+            <td class="politicianBox col-2"></td>
+            <td class="politicianBox col-2">
+              <div ng-if="!knowledge[character][getRegencyPoliticians()[0].name].identity">
+                <img ng-src="/img/question.jpg"><h3>??????</h3>
+              </div>
+              <div ng-if="knowledge[character][getRegencyPoliticians()[0].name].identity">
+                <img ng-if="knowledge[character][getRegencyPoliticians()[0].name].identity" ng-src="/img/{{getRegencyPoliticians()[0].image}}"><h3>{{getRegencyPoliticians()[0].name}}</h3>
+              </div>
+            </td>
+            <td class="politicianBox col-2"></td>
+            <td class="politicianBox col-2"></td>
+          </tr>
+          <tr class="row knowledgeRow">
+            <td class="politicianBox col-2"></td>
+            <td class="politicianBox col-2">
+              <div ng-if="!knowledge[character][getMinistryPoliticians()[0].name].identity">
+                <img ng-src="/img/question.jpg"><h3>??????</h3>
+              </div>
+              <div ng-if="knowledge[character][getMinistryPoliticians()[0].name].identity">
+                <img ng-src="/img/{{getMinistryPoliticians()[0].image}}"><h3>{{getMinistryPoliticians()[0].name}}</h3></td>
+              </div>
+            <td class="politicianBox col-2">
+              <div ng-if="!knowledge[character][getMinistryPoliticians()[1].name].identity">
+                <img ng-src="/img/question.jpg"><h3>??????</h3>
+              </div>
+              <div ng-if="knowledge[character][getMinistryPoliticians()[1].name].identity">
+                <img ng-src="/img/{{getMinistryPoliticians()[1].image}}"><h3>{{getMinistryPoliticians()[1].name}}</h3></td>
+              </div>
+            <td class="politicianBox col-2">
+              <div>
+                <img ng-src="/img/question.jpg"><h3>Vaga livre</h3>
+              </div>
+            </td>
+            <td class="politicianBox col-2"></td>
+          </tr>
+          <tr class="row knowledgeRow">
+            <td class="politicianBox col-2">
+              <div ng-if="!knowledge[character][getSecretaryPoliticians()[0].name].identity">
+                <img ng-src="/img/question.jpg"><h3>??????</h3>
+              </div>
+              <div ng-if="knowledge[character][getSecretaryPoliticians()[0].name].identity">
+                <img ng-src="/img/{{getSecretaryPoliticians()[0].image}}"><h3>{{getSecretaryPoliticians()[0].name}}</h3></td>
+              </div>
+            <td class="politicianBox col-2">
+              <div ng-if="!knowledge[character][getSecretaryPoliticians()[1].name].identity">
+                <img ng-src="/img/question.jpg"><h3>??????</h3>
+              </div>
+              <div ng-if="knowledge[character][getSecretaryPoliticians()[1].name].identity">
+                <img ng-src="/img/{{getSecretaryPoliticians()[1].image}}"><h3>{{getSecretaryPoliticians()[1].name}}</h3></td>
+              </div>
+            <td class="politicianBox col-2">
+              <div ng-if="!knowledge[character][getSecretaryPoliticians()[2].name].identity">
+                <img ng-src="/img/question.jpg"><h3>??????</h3>
+              </div>
+              <div ng-if="knowledge[character][getSecretaryPoliticians()[2].name].identity">
+                <img ng-src="/img/{{getSecretaryPoliticians()[2].image}}"><h3>{{getSecretaryPoliticians()[2].name}}</h3></td>
+              </div>
+            <td class="politicianBox col-2">
+              <div ng-if="!knowledge[character][getSecretaryPoliticians()[3].name].identity">
+                <img ng-src="/img/question.jpg"><h3>??????</h3>
+              </div>
+              <div ng-if="knowledge[character][getSecretaryPoliticians()[3].name].identity">
+                <img ng-src="/img/{{getSecretaryPoliticians()[3].image}}"><h3>{{getSecretaryPoliticians()[3].name}}</h3></td>
+              </div>
+            <td class="politicianBox col-2">
+              <div ng-if="!knowledge[character][getSecretaryPoliticians()[4].name].identity">
+                <img ng-src="/img/question.jpg"><h3>??????</h3>
+              </div>
+              <div ng-if="knowledge[character][getSecretaryPoliticians()[4].name].identity">
+                <img ng-src="/img/{{getSecretaryPoliticians()[4].image}}"><h3>{{getSecretaryPoliticians()[4].name}}</h3></td>
+              </div>
+            </td>
+          </tr>
+        </table>
       </div>
   	</div>
   </body>

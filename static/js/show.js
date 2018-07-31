@@ -55,6 +55,7 @@ app.controller("controller", function($scope, $http) {
 		}
 	}
 	$scope.intervalId;
+	$scope.showKnowledge = false;
 	$scope.getOrders = function(){
 		$http.get("/orders").then(function(response){
 			var data = response.data;
@@ -81,7 +82,37 @@ app.controller("controller", function($scope, $http) {
 				if(data.stopMusic){
 					$scope.stop();
 				}
+				if(data.chosenCharacter != null){
+					$scope.showKnowledge = true;
+					$scope.knowledge = data.knowledge;
+					$scope.politicians = data.politicians;
+					$scope.character = data.chosenCharacter;
+				}
+				if(data.hideKnowledge != null){
+					$scope.showKnowledge = false;
+					$scope.knowledge = null;
+					$scope.politicians = null;
+					$scope.character = null;	
+				}
 			}
+		});
+	}
+
+	$scope.getRegencyPoliticians = function(){
+		return _.filter($scope.politicians, function(item){
+			return item.occupation.indexOf("Regente") > -1;
+		});
+	}
+
+	$scope.getMinistryPoliticians = function(){
+		return _.filter($scope.politicians, function(item){
+			return item.occupation.indexOf("Ministro") > -1;
+		});
+	}
+
+	$scope.getSecretaryPoliticians = function(){
+		return _.filter($scope.politicians, function(item){
+			return item.occupation.indexOf("Secretário") > -1;
 		});
 	}
 
